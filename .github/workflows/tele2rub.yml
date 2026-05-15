@@ -1,40 +1,12 @@
-name: Tele2Rub Transfer Worker
-
-on:
-  workflow_dispatch:
-    inputs:
-      chat_id:
-        description: 'Telegram Chat ID'
-        required: true
-        type: string
-      message_id:
-        description: 'Telegram Message ID'
-        required: true
-        type: string
-
-jobs:
-  transfer-file:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Dependencies
+- name: Recreate Rubika Session
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          echo "${{ secrets.RUBIKA_SESSION_BASE64 }}" | base64 -d > rubsession.sqlite
 
       - name: Run Transfer Engine
         env:
           API_ID: ${{ secrets.API_ID }}
           API_HASH: ${{ secrets.API_HASH }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          RUBIKA_SESSION: ${{ secrets.RUBIKA_SESSION }}
           CHAT_ID: ${{ github.event.inputs.chat_id }}
           MESSAGE_ID: ${{ github.event.inputs.message_id }}
         run: |
