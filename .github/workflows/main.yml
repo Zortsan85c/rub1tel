@@ -9,6 +9,12 @@ on:
       message_id:
         description: 'Telegram Message ID'
         required: true
+      status_message_id:
+        description: 'Message ID to edit'
+        required: false
+      should_zip:
+        description: 'Zip the file before uploading'
+        required: false
 
 jobs:
   transfer-file:
@@ -24,7 +30,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install pyrogram tgcrypto rubpy
+          pip install pyrogram tgcrypto rubpy pyzipper
 
       - name: Run Tele2Rub Core
         env:
@@ -34,4 +40,6 @@ jobs:
           RUBIKA_SESSION_BASE64: ${{ secrets.RUBIKA_SESSION_BASE64 }}
           CHAT_ID: ${{ github.event.inputs.chat_id }}
           MESSAGE_ID: ${{ github.event.inputs.message_id }}
+          STATUS_MESSAGE_ID: ${{ github.event.inputs.status_message_id }}
+          SHOULD_ZIP: ${{ github.event.inputs.should_zip }}
         run: python runner.py
