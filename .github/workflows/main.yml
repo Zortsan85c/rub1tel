@@ -16,6 +16,11 @@ on:
         description: 'Zip the file before uploading'
         required: false
 
+# این بخش سیستم صف (Queue) را ایجاد می‌کند
+concurrency:
+  group: tele2rub-queue
+  cancel-in-progress: false # بسیار مهم: کارهای قبلی نباید لغو شوند، باید در صف منتظر بمانند
+
 jobs:
   transfer-file:
     runs-on: ubuntu-latest
