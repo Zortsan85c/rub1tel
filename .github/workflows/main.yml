@@ -1,4 +1,4 @@
-name: Tele2Rub Transfer Worker
+name: Tele2Rub Runner
 
 on:
   workflow_dispatch:
@@ -6,11 +6,9 @@ on:
       chat_id:
         description: 'Telegram Chat ID'
         required: true
-        type: string
       message_id:
         description: 'Telegram Message ID'
         required: true
-        type: string
 
 jobs:
   transfer-file:
@@ -19,26 +17,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install Dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pyrogram tgcrypto rubpy
 
-      - name: Recreate Rubika Session (.rp)
-        run: |
-          echo "${{ secrets.RUBIKA_SESSION_BASE64 }}" | base64 -d > rubsession.rp
-
-      - name: Run Transfer Engine
+      - name: Run Tele2Rub Core
         env:
           API_ID: ${{ secrets.API_ID }}
           API_HASH: ${{ secrets.API_HASH }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          RUBIKA_SESSION_BASE64: ${{ secrets.RUBIKA_SESSION_BASE64 }}
           CHAT_ID: ${{ github.event.inputs.chat_id }}
           MESSAGE_ID: ${{ github.event.inputs.message_id }}
-        run: |
-          python main.py
+        run: python runner.py
